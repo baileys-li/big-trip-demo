@@ -15,20 +15,20 @@ function markUpTripInfo() {
 }
 
 export default class TripInfoView {
-	element: HTMLDivElement | null = null;
+	#element: HTMLDivElement | null = null;
 	getTemplate() {
 		return markUpTripInfo();
 	}
 
-	getElement() {
-		if (!this.element) {
-			this.element = createElement<HTMLDivElement>(this.getTemplate());
+	get element() {
+		if (!this.#element) {
+			this.#element = createElement<HTMLDivElement>(this.getTemplate());
 		}
 
-		return this.element;
+		return this.#element;
 	}
 
 	removeElement() {
-		this.element = null;
+		this.#element = null;
 	}
 }
