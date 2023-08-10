@@ -1,3 +1,5 @@
+import type AbstractView from './views/_abstract';
+
 /**
  * @param template  parsable to HTML string
  */
@@ -8,12 +10,9 @@ function createElement<El extends Element = HTMLDivElement>(template: string) {
 	return newElement.firstElementChild as El;
 }
 
-interface GenericComponent {
-	getElement(): Element;
-}
 
-function render(component: GenericComponent, container: Element, place: InsertPosition = 'beforeend') {
-	container.insertAdjacentElement(place, component.getElement());
+function render(component: AbstractView, container: Element, place: InsertPosition = 'beforeend') {
+	container.insertAdjacentElement(place, component.element);
 }
 
 export { createElement, render };
