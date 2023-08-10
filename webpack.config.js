@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default {
-	entry: './src/main.js',
+	entry: './src/main.ts',
 	output: {
 		filename: 'bundle.[contenthash].js',
 		path: resolve(__dirname, 'build'),
@@ -29,6 +29,9 @@ export default {
 			],
 		}),
 	],
+	resolve: {
+		extensions: ['.tsx', '.ts', '.js'],
+	},
 	module: {
 		rules: [
 			{
@@ -40,6 +43,11 @@ export default {
 						presets: ['@babel/preset-env'],
 					},
 				},
+			},
+			{
+				test: /\.tsx?$/,
+				use: 'ts-loader',
+				exclude: /node_modules/,
 			},
 		],
 	},

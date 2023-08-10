@@ -1,3 +1,5 @@
+root: true
+
 parserOptions:
   ecmaVersion: latest
   sourceType: 'module'
@@ -13,3 +15,19 @@ rules:
     - error
     - tab
     - SwitchCase: 1
+
+overrides:
+  - files:
+      - '*.ts'
+    extends:
+      - plugin:@typescript-eslint/recommended
+    parser: "@typescript-eslint/parser"
+    parserOptions:
+      ecmaVersion: latest
+    plugins:
+      - "@typescript-eslint"
+    rules:
+      no-shadow: off
+      '@typescript-eslint/no-shadow': error
+      '@typescript-eslint/no-non-null-assertion': off
+      '@typescript-eslint/no-duplicate-enum-values': off

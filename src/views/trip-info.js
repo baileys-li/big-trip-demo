@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import { createElement } from '../render.ts';
 
 function markUpTripInfo() {
 	return `<section class="trip-main__trip-info  trip-info">
