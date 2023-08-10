@@ -1,4 +1,4 @@
-import { createElement } from '../render.ts';
+import { createElement } from '../render.js';
 
 function markUpTripInfo() {
 	return `<section class="trip-main__trip-info  trip-info">
@@ -15,13 +15,14 @@ function markUpTripInfo() {
 }
 
 export default class TripInfoView {
+	element: HTMLDivElement | null = null;
 	getTemplate() {
 		return markUpTripInfo();
 	}
 
 	getElement() {
 		if (!this.element) {
-			this.element = createElement(this.getTemplate());
+			this.element = createElement<HTMLDivElement>(this.getTemplate());
 		}
 
 		return this.element;
