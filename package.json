@@ -1,17 +1,17 @@
 {
-  "name": "big-trip",
-  "version": "20.0.0",
-  "private": true,
-  "description": "Проект «Большое путешествие» от HTML Academy",
-  "scripts": {
-    "lint": "eslint src/"
-  },
-  "devDependencies": {
-    "eslint": "8.38.0",
-    "eslint-config-htmlacademy": "9.0.0"
-  },
-  "packageManager": "pnpm@8.6.12",
-  "volta": {
-    "node": "18.17.1"
-  }
+	"name": "big-trip",
+	"version": "20.0.0",
+	"private": true,
+	"description": "Проект «Большое путешествие» от HTML Academy",
+	"scripts": {
+		"lint": "eslint src/"
+	},
+	"devDependencies": {
+		"eslint": "8.38.0",
+		"eslint-config-htmlacademy": "9.0.0"
+	},
+	"packageManager": "pnpm@8.6.12",
+	"volta": {
+		"node": "18.17.1"
+	}
 }
