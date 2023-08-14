@@ -43,7 +43,15 @@ export default class PointPresenter {
 	}
 
 	#renderInfo() {
-		this.#content = new EventView();
+		const point = this.#point!;
+		const destination = this.#destinationsModel!.getById(point.destination);
+		const offer = this.#offersModel!.getByType(point.type);
+
+		this.#content = new EventView({
+			point,
+			city: destination?.name || '',
+			offers: offer?.offers.filter(({id}) => point.offers.includes(id)) || [],
+		});
 		render(this.#content, this.#item.element);
 	}
 }
