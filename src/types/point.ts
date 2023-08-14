@@ -1,3 +1,4 @@
+import type { Dayjs } from 'dayjs';
 import { POINT_TYPES } from '../constants';
 import type { Destination } from './destinations';
 import type { OfferItem } from './offer';
@@ -16,6 +17,9 @@ interface ServerPoint {
 	type: PointType;
 }
 
-type Point = CamelizeObject<ServerPoint>;
+type Point = Omit<CamelizeObject<ServerPoint>, 'dateFrom' | 'dateTo'> & {
+	dateFrom: Dayjs;
+	dateTo: Dayjs;
+};
 
 export { PointType, ServerPoint, Point };
