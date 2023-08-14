@@ -3,9 +3,12 @@ const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-i
 const CITIES = [
 	'Amsterdam',
 	'Baku',
+	'Barcelona',
 	'Berlin',
+	'Bern',
 	'Chamonix',
 	'Geneva',
+	'Kiyv',
 	'Lissabon',
 	'Madrid',
 	'Moscow',
@@ -13,6 +16,8 @@ const CITIES = [
 	'Rim',
 	'Saint Petersburg',
 	'Tokyo',
+	'Vienna',
+	'Zurich',
 ];
 
 export { POINT_TYPES, CITIES };
