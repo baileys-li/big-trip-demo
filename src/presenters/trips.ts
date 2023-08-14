@@ -1,46 +1,48 @@
+import type { OffersModel, PointsModel, DestinationModel } from '../models';
 import { render } from '../render';
-import EditEventView from '../views/edit-event';
-import EventView from '../views/event';
-import TripItemView from '../views/trip-item';
 import TripListView from '../views/trip-list';
+import PointPresenter from './point';
 
 interface TripsPresenterProps {
 	container: HTMLElement;
+	pointsModel: PointsModel;
+	offersModel: OffersModel;
+	destinationsModel: DestinationModel;
 }
 
 export default class TripsPresenter {
+	#pointsModel: PointsModel | null = null;
+	#offersModel: OffersModel | null = null;
+	#destinationsModel: DestinationModel | null = null;
+
 	#container: HTMLElement | null = null;
 	#list = new TripListView();
-	#items: TripItemView[] = [];
+	#points: PointPresenter[] = [];
 
-	constructor({ container }: TripsPresenterProps) {
+	constructor({ container, pointsModel, offersModel, destinationsModel }: TripsPresenterProps) {
 		this.#container = container;
+		this.#pointsModel = pointsModel;
+		this.#offersModel = offersModel;
+		this.#destinationsModel = destinationsModel;
+
 		render(this.#list, this.#container);
 
-		this.#showEditExample();
+		this.#renderInitial();
 
-		for (let i = 0; i < 3; i++) {
-			this.#showItemExample();
-		}
+		this.#points[0].switchToEdit();
 	}
 
-	#createItem() {
-		const item = new TripItemView();
-		this.#items.push(item);
-		render(item, this.#list.element);
-
-		return item;
-	}
-
-	#showEditExample() {
-		const wrapper = this.#createItem();
-		const form = new EditEventView();
-		render(form, wrapper.element);
-	}
-
-	#showItemExample() {
-		const wrapper = this.#createItem();
-		const event = new EventView();
-		render(event, wrapper.element);
+	#renderInitial() {
+		const points = this.#pointsModel!.points;
+		this.#points = points.map(
+			(point) =>
+				new PointPresenter({
+					point,
+					container: this.#list.element,
+					pointsModel: this.#pointsModel!,
+					offersModel: this.#offersModel!,
+					destinationsModel: this.#destinationsModel!,
+				})
+		);
 	}
 }
