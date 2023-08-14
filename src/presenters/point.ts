@@ -1,6 +1,6 @@
 import type { OffersModel, PointsModel, DestinationModel } from '../models';
 import { render } from '../render';
-import { Point } from '../types/point';
+import { Point, PointType } from '../types/point';
 import EditEventView from '../views/edit-event';
 import EventView from '../views/event';
 import TripItemView from '../views/trip-item';
@@ -38,7 +38,11 @@ export default class PointPresenter {
 		const oldContent = this.#content!;
 		oldContent.element.remove();
 		oldContent.removeElement();
-		this.#content = new EditEventView();
+		this.#content = new EditEventView({
+			point: this.#point!,
+			getDestinations: this.#destinationsModel!.getById.bind(this.#destinationsModel!),
+			getOffers: (type: PointType) => this.#offersModel!.getByType(type)?.offers || [],
+		});
 		render(this.#content, this.#item.element);
 	}
 

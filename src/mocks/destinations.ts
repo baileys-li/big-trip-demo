@@ -19,7 +19,7 @@ const MESSAGES = [
 const mockDescription = () => Array.from({ length: getRandomInteger(1, 5) }, () => getRandomElement(MESSAGES)).join(' ');
 
 const mockPicture = (city: string): Picture => ({
-	src: `https://loremflickr.com/248/152/${city}?random=${getRandomInteger(1, 10)}`,
+	src: `https://loremflickr.com/248/152/${city}?random=${getRandomInteger()}`,
 	description: mockDescription(),
 });
 
