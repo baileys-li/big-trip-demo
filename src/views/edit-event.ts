@@ -1,9 +1,9 @@
-import { CITIES, POINT_TYPES } from '../constants';
+import { CITIES } from '../constants';
 import AbstractView from '../framework/view/abstract-view';
+import { markUpTypeWrapper } from '../templates/type-wrapper';
 import { Destination } from '../types/destinations';
 import { OfferItem } from '../types/offer';
 import { Point } from '../types/point';
-import { capitilize } from '../utils';
 
 interface EditEventViewProps {
 	point: Point;
@@ -11,34 +11,13 @@ interface EditEventViewProps {
 	getOffers: (type: Point['type']) => OfferItem[];
 }
 
-const MARKUP_OF_TYPES = POINT_TYPES.map(
-	(type) => `<div class="event__type-item">
-	<input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-	<label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${capitilize(type)}</label>
-</div>`
-).join('');
-
 function markUp({ point, getDestinations, getOffers }: EditEventViewProps) {
 	const destination = getDestinations(point.destination);
 	const offers = getOffers(point.type);
 
 	return `<form class="event event--edit" action="#" method="post">
 	<header class="event__header">
-		<div class="event__type-wrapper">
-			<label class="event__type  event__type-btn" for="event-type-toggle-1">
-				<span class="visually-hidden">Choose event type</span>
-				<img class="event__type-icon" width="17" height="17" src="img/icons/${point.type}.png" alt="${point.type} icon">
-			</label>
-			<input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-
-			<div class="event__type-list">
-				<fieldset class="event__type-group">
-					<legend class="visually-hidden">Event type</legend>
-					${MARKUP_OF_TYPES}
-				</fieldset>
-			</div>
-		</div>
-
+		${markUpTypeWrapper(point.type)}
 		<div class="event__field-group  event__field-group--destination">
 			<label class="event__label  event__type-output" for="event-destination-1">
 			${point.type}
@@ -53,10 +32,14 @@ function markUp({ point, getDestinations, getOffers }: EditEventViewProps) {
 
 		<div class="event__field-group  event__field-group--time">
 			<label class="visually-hidden" for="event-start-time-1">From</label>
-			<input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${point.dateFrom.format('YY/MM/DD HH:mm')}">
+			<input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${point.dateFrom.format(
+		'YY/MM/DD HH:mm'
+	)}">
 			—
 			<label class="visually-hidden" for="event-end-time-1">To</label>
-			<input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${point.dateTo.format('YY/MM/DD HH:mm')}">
+			<input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${point.dateTo.format(
+		'YY/MM/DD HH:mm'
+	)}">
 		</div>
 
 		<div class="event__field-group  event__field-group--price">
