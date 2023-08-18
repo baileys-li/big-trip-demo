@@ -1,9 +1,9 @@
 import { CITIES, POINT_TYPES } from '../constants';
+import AbstractView from '../framework/view/abstract-view';
 import { Destination } from '../types/destinations';
 import { OfferItem } from '../types/offer';
 import { Point } from '../types/point';
 import { capitilize } from '../utils';
-import AbstractView from './_abstract';
 
 interface EditEventViewProps {
 	point: Point;

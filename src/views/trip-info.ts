@@ -1,4 +1,4 @@
-import AbstractView from './_abstract';
+import AbstractView from '../framework/view/abstract-view';
 
 function markUp() {
 	return `<section class="trip-main__trip-info  trip-info">

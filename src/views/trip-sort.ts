@@ -1,4 +1,4 @@
-import AbstractView from './_abstract';
+import AbstractView from '../framework/view/abstract-view';
 
 function markUp() {
 	return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">

@@ -1,10 +1,10 @@
 import TripsPresenter from './presenters/trips';
-import { render } from './render';
 import TripFiltersView from './views/trip-filters';
 import TripInfoView from './views/trip-info';
 import TripSortView from './views/trip-sort';
 import { PointsModel, DestinationModel, OffersModel } from './models';
 import MockService from './services/mock';
+import { render } from './framework/render';
 
 const headerMain = document.querySelector<HTMLDivElement>('.trip-main');
 const filterWrapper = document.querySelector<HTMLDivElement>('.trip-controls__filters');

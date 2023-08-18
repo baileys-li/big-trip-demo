@@ -1,7 +1,7 @@
+import AbstractView from '../framework/view/abstract-view';
 import { markUpEvent, type MarkUpEventProps } from '../templates/event';
 import { OfferItem } from '../types/offer';
 import type { Point } from '../types/point';
-import AbstractView from './_abstract';
 
 interface EventViewProps {
 	point: Point;
