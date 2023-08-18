@@ -1,10 +1,8 @@
+import { EventView, EditEventView, TripItemView } from '@views';
 import { render } from '../framework/render';
 import type { OffersModel, PointsModel, DestinationModel } from '../models';
 
 import { Point, PointType } from '../types/point';
-import EditEventView from '../views/edit-event';
-import EventView from '../views/event';
-import TripItemView from '../views/trip-item';
 
 interface PointPresenterProps {
 	point: Point;
