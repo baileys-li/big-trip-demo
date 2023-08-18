@@ -1,6 +1,5 @@
 import AbstractView from './view/abstract-view';
 
-
 /**
  * @param template  parsable to HTML string
  */

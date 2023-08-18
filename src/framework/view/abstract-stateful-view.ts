@@ -1,6 +1,6 @@
 import AbstractView from './abstract-view';
 
-export default class AbstractStatefulView<State> extends AbstractView {
+export default class AbstractStatefulView<State, El extends Element = HTMLDivElement> extends AbstractView<El> {
 
 	_state = {} as State;
 
