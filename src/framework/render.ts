@@ -15,7 +15,7 @@ function render(component: AbstractView<Element>, container: HTMLElement, place:
 	container.insertAdjacentElement(place, component.element);
 }
 
-function replace(newComponent: AbstractView, oldComponent: AbstractView) {
+function replace(newComponent: AbstractView<Element>, oldComponent: AbstractView<Element>) {
 	const newElement = newComponent.element;
 	const oldElement = oldComponent.element;
 
@@ -28,7 +28,7 @@ function replace(newComponent: AbstractView, oldComponent: AbstractView) {
 	parent.replaceChild(newElement, oldElement);
 }
 
-function remove(component: AbstractView) {
+function remove(component: AbstractView<Element>) {
 	component.element.remove();
 	component.removeElement();
 }

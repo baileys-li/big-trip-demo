@@ -1,5 +1,5 @@
 import { EventView, EditEventView, TripItemView } from '@views';
-import { render } from '../framework/render';
+import { remove, render } from '../framework/render';
 import type { OffersModel, PointsModel, DestinationModel } from '../models';
 
 import { Point, PointType } from '../types/point';
@@ -56,5 +56,10 @@ export default class PointPresenter {
 			offers: offer?.offers.filter(({id}) => point.offers.includes(id)) || [],
 		});
 		render(this.#content, this.#item.element);
+	}
+
+	destroy() {
+		remove(this.#content!);
+		remove(this.#item);
 	}
 }

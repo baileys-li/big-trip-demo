@@ -1,37 +1,49 @@
 import AbstractView from '../framework/view/abstract-view';
+import { FilterType } from '../types/filter';
+import { capitilize } from '../utils';
 
-function markUp() {
+interface TripFiltersViewProps {
+	onFilterChange: (filter: FilterType) => void;
+	disabledFilters?: FilterType[];
+}
+
+const FILTERS: FilterType[] = ['everything', 'future', 'present', 'past'];
+
+const markUpFilter = (filter: FilterType, checked = false, disabled = false) => `<div class="trip-filters__filter">
+	<input id="filter-${filter}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filter}" ${
+	checked ? 'checked' : ''
+} ${disabled ? 'disabled' : ''}>
+	<label class="trip-filters__filter-label" for="filter-${filter}">${capitilize(filter)}</label>
+</div>`;
+
+function markUp(disabled: FilterType[]) {
 	return `<form class="trip-filters" action="#" method="get">
-	<div class="trip-filters__filter">
-		<input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" checked>
-		<label class="trip-filters__filter-label" for="filter-everything">Everything</label>
-	</div>
-
-	<div class="trip-filters__filter">
-		<input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
-		<label class="trip-filters__filter-label" for="filter-future">Future</label>
-	</div>
-
-	<div class="trip-filters__filter">
-		<input id="filter-present" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="present">
-		<label class="trip-filters__filter-label" for="filter-present">Present</label>
-	</div>
-
-	<div class="trip-filters__filter">
-		<input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past">
-		<label class="trip-filters__filter-label" for="filter-past">Past</label>
-	</div>
-
+	${FILTERS.map((filter) => markUpFilter(filter, filter === 'everything', disabled.includes(filter))).join('')}
 	<button class="visually-hidden" type="submit">Accept filter</button>
 </form>`;
 }
 
 export default class TripFiltersView extends AbstractView<HTMLFormElement> {
-	constructor() {
+	#onFilterChange: (filter: FilterType) => void;
+	#disabledFilters: FilterType[];
+	constructor({ onFilterChange, disabledFilters }: TripFiltersViewProps) {
 		super();
+		this.#onFilterChange = onFilterChange;
+		this.#disabledFilters = disabledFilters || [];
+
+		this.#initHandlers();
+	}
+
+	#handleChange(evt: Event) {
+		const target = evt.target as HTMLInputElement;
+		this.#onFilterChange(target.value as FilterType);
+	}
+
+	#initHandlers() {
+		this.element.addEventListener('change', this.#handleChange.bind(this));
 	}
 
 	get template() {
-		return markUp();
+		return markUp(this.#disabledFilters);
 	}
 }

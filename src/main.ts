@@ -3,7 +3,7 @@ import TripsPresenter from './presenters/trips';
 import { PointsModel, DestinationModel, OffersModel } from './models';
 import MockService from './services/mock';
 import { render } from './framework/render';
-import { TripInfoView, TripFiltersView, TripSortView } from '@views';
+import { TripInfoView, TripSortView } from '@views';
 
 const headerMain = document.querySelector<HTMLDivElement>('.trip-main');
 const filterWrapper = document.querySelector<HTMLDivElement>('.trip-controls__filters');
@@ -18,6 +18,5 @@ if (!headerMain || !filterWrapper || !eventsWrapper) {
 }
 
 render(new TripInfoView(), headerMain, 'afterbegin');
-render(new TripFiltersView(), filterWrapper);
 render(new TripSortView(), eventsWrapper);
-new TripsPresenter({ container: eventsWrapper, pointsModel, destinationsModel, offersModel });
+new TripsPresenter({ container: eventsWrapper, filterWrapper, pointsModel, destinationsModel, offersModel });
