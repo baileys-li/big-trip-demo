@@ -1,5 +1,6 @@
+import { render } from '../framework/render';
 import type { OffersModel, PointsModel, DestinationModel } from '../models';
-import { render } from '../render';
+
 import { Point, PointType } from '../types/point';
 import EditEventView from '../views/edit-event';
 import EventView from '../views/event';

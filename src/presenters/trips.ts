@@ -1,5 +1,5 @@
+import { render } from '../framework/render';
 import type { OffersModel, PointsModel, DestinationModel } from '../models';
-import { render } from '../render';
 import TripListView from '../views/trip-list';
 import PointPresenter from './point';
 
