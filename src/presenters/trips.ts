@@ -39,10 +39,11 @@ export default class TripsPresenter {
 
 		this.#filteredPoints = {
 			everything: this.#pointsModel.points,
-			future: this.#pointsModel.points.filter((point) => now.isAfter(point.dateFrom)),
+			future: this.#pointsModel.points.filter((point) => now.isBefore(point.dateFrom)),
 			present: this.#pointsModel.points.filter((point) => now.isAfter(point.dateTo) && now.isBefore(point.dateFrom)),
-			past: this.#pointsModel.points.filter((point) => now.isBefore(point.dateTo)),
+			past: this.#pointsModel.points.filter((point) => now.isAfter(point.dateTo)),
 		};
+
 
 		this.#renderInitial();
 	}
