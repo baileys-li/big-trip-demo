@@ -1,5 +1,5 @@
 import { EventView, EditEventView, TripItemView } from '@views';
-import { remove, render } from '../framework/render';
+import { remove, render, replace } from '../framework/render';
 import type { OffersModel, PointsModel, DestinationModel } from '../models';
 
 import { Point, PointType } from '../types/point';
@@ -33,32 +33,55 @@ export default class PointPresenter {
 		render(this.#item, this.#container);
 	}
 
-	switchToEdit() {
+	#switchToEdit = () => {
 		const oldContent = this.#content!;
-		oldContent.element.remove();
-		oldContent.removeElement();
 		this.#content = new EditEventView({
 			point: this.#point!,
 			getDestinations: this.#destinationsModel!.getById.bind(this.#destinationsModel!),
 			getOffers: (type: PointType) => this.#offersModel!.getByType(type)?.offers || [],
+			cancel: this.#switchToNormal,
 		});
-		render(this.#content, this.#item.element);
-	}
+		replace(this.#content!, oldContent);
 
-	#renderInfo() {
+		document.addEventListener('keydown', this.#handleEscKeyDown);
+	};
+
+	#handleEscKeyDown = (evt: KeyboardEvent) => {
+		if (evt.key === 'Escape' || evt.key === 'Esc') {
+			this.#switchToNormal();
+			this.#removeEscKeyDown();
+		}
+	};
+
+	#removeEscKeyDown = () => document.removeEventListener('keydown', this.#handleEscKeyDown);
+
+	#switchToNormal = () => {
+		const oldContent = this.#content!;
+		this.#content = this.#getNormalView();
+		replace(this.#content!, oldContent);
+		this.#removeEscKeyDown();
+	};
+
+	#getNormalView() {
 		const point = this.#point!;
 		const destination = this.#destinationsModel!.getById(point.destination);
 		const offer = this.#offersModel!.getByType(point.type);
 
-		this.#content = new EventView({
+		return new EventView({
 			point,
 			city: destination?.name || '',
 			offers: offer?.offers.filter(({id}) => point.offers.includes(id)) || [],
+			switchMode: this.#switchToEdit,
 		});
+	}
+
+	#renderInfo() {
+		this.#content = this.#getNormalView();
 		render(this.#content, this.#item.element);
 	}
 
 	destroy() {
+		this.#removeEscKeyDown();
 		remove(this.#content!);
 		remove(this.#item);
 	}

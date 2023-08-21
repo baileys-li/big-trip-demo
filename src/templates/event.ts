@@ -24,12 +24,17 @@ const markUpOffers = (offers: OfferItem[]) => `
 const markUpTime = (date: Dayjs) =>
 	`<time class="event__start-time" datetime="${date.format('YYYY-MM-DD[T]HH:mm')}">${date.format('H:m')}</time>`;
 
+export const ActionButtonCSSClass = {
+	FAVORITE: 'event__favorite-btn',
+	ROLLUP: 'event__rollup-btn',
+};
+
 export function markUpEvent({ city, type, basePrice, offers, dateFrom, dateTo, isFavorite }: MarkUpEventProps) {
 	const offersMarkup = offers.length ? markUpOffers(offers) : '';
 
-	const favoriteClasses = ['event__favorite-btn'];
+	const favoriteClasses = [ActionButtonCSSClass.FAVORITE];
 	if (isFavorite) {
-		favoriteClasses.push('event__favorite-btn--active');
+		favoriteClasses.push(`${ActionButtonCSSClass.FAVORITE}--active`);
 	}
 
 	return `<div class="event">
@@ -56,7 +61,7 @@ export function markUpEvent({ city, type, basePrice, offers, dateFrom, dateTo, i
 			<path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"></path>
 		</svg>
 	</button>
-	<button class="event__rollup-btn" type="button">
+	<button class="${ActionButtonCSSClass.ROLLUP}" type="button">
 		<span class="visually-hidden">Open event</span>
 	</button>
 </div>`;

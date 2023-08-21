@@ -41,10 +41,7 @@ export default class TripsPresenter {
 			past: this.#pointsModel.points.filter((point) => now.isBefore(point.dateTo)),
 		};
 
-		render(this.#list, this.#container);
-
 		this.#renderInitial();
-		this.#points[0].switchToEdit();
 	}
 
 	#clearList() {
@@ -71,6 +68,7 @@ export default class TripsPresenter {
 	}
 
 	#renderInitial() {
+		render(this.#list, this.#container);
 		render(new TripFiltersView({
 			onFilterChange: this.#handleFilerChange,
 			disabledFilters: Object.keys(this.#filteredPoints).filter((filter) => !this.#filteredPoints[filter as FilterType].length) as FilterType[],

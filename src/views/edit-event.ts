@@ -9,7 +9,12 @@ interface EditEventViewProps {
 	point: Point;
 	getDestinations: (id: string) => Destination | undefined;
 	getOffers: (type: Point['type']) => OfferItem[];
+	cancel(): void;
 }
+
+const CSSClasses = {
+	ROLL_UP: 'event__rollup-btn',
+};
 
 function markUp({ point, getDestinations, getOffers }: EditEventViewProps) {
 	const destination = getDestinations(point.destination);
@@ -51,8 +56,11 @@ function markUp({ point, getDestinations, getOffers }: EditEventViewProps) {
 		</div>
 
 		<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-		<button class="event__reset-btn" type="reset">Cancel</button>
-		${/* <button class="event__reset-btn" type="reset">Delete</button> */ ''}
+		<button class="event__reset-btn" type="reset">Delete</button>
+		${/* <button class="event__reset-btn" type="reset">Cancel</button> */ ''}
+		<button class="${CSSClasses.ROLL_UP}" type="button">
+			<span class="visually-hidden">Open event</span>
+		</button>
 	</header>
 	<section class="event__details">
 		<section class="event__section  event__section--offers">
@@ -96,6 +104,8 @@ export default class EditEventView extends AbstractView<HTMLFormElement> {
 	constructor(props: EditEventViewProps) {
 		super();
 		this.#props = props;
+
+		this.element.querySelector(`.${CSSClasses.ROLL_UP}`)?.addEventListener('click', this.#props.cancel);
 	}
 
 	get template() {
