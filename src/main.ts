@@ -1,3 +1,4 @@
+import './utils/polyfills';
 import TripsPresenter from './presenters/trips';
 
 import { PointsModel, DestinationModel, OffersModel } from './models';
