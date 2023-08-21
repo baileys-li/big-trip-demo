@@ -10,24 +10,27 @@ interface PointPresenterProps {
 	pointsModel: PointsModel;
 	offersModel: OffersModel;
 	destinationsModel: DestinationModel;
+	changeActivePoint(point: PointPresenter): void;
 }
 
 export default class PointPresenter {
-	#pointsModel: PointsModel | null = null;
-	#offersModel: OffersModel | null = null;
-	#destinationsModel: DestinationModel | null = null;
-	#point: Point | null = null;
+	#pointsModel: PointsModel;
+	#offersModel: OffersModel;
+	#destinationsModel: DestinationModel;
+	#point: Point;
 
-	#container: HTMLElement | null = null;
+	#container: HTMLElement;
 	#item = new TripItemView();
 	#content: EventView | EditEventView | null = null;
+	#changeActivePoint: () => void;
 
-	constructor({ container, pointsModel, offersModel, destinationsModel, point }: PointPresenterProps) {
+	constructor({ container, pointsModel, offersModel, destinationsModel, point, changeActivePoint }: PointPresenterProps) {
 		this.#container = container;
 		this.#pointsModel = pointsModel;
 		this.#offersModel = offersModel;
 		this.#destinationsModel = destinationsModel;
 		this.#point = point;
+		this.#changeActivePoint = () => changeActivePoint(this);
 
 		this.#renderInfo();
 		render(this.#item, this.#container);
@@ -36,26 +39,26 @@ export default class PointPresenter {
 	#switchToEdit = () => {
 		const oldContent = this.#content!;
 		this.#content = new EditEventView({
-			point: this.#point!,
-			getDestinations: this.#destinationsModel!.getById.bind(this.#destinationsModel!),
-			getOffers: (type: PointType) => this.#offersModel!.getByType(type)?.offers || [],
-			cancel: this.#switchToNormal,
+			point: this.#point,
+			getDestinations: this.#destinationsModel.getById.bind(this.#destinationsModel!),
+			getOffers: (type: PointType) => this.#offersModel.getByType(type)?.offers || [],
+			cancel: this.switchToNormal,
 		});
 		replace(this.#content!, oldContent);
-
+		this.#changeActivePoint();
 		document.addEventListener('keydown', this.#handleEscKeyDown);
 	};
 
 	#handleEscKeyDown = (evt: KeyboardEvent) => {
 		if (evt.key === 'Escape' || evt.key === 'Esc') {
-			this.#switchToNormal();
+			this.switchToNormal();
 			this.#removeEscKeyDown();
 		}
 	};
 
 	#removeEscKeyDown = () => document.removeEventListener('keydown', this.#handleEscKeyDown);
 
-	#switchToNormal = () => {
+	switchToNormal = () => {
 		const oldContent = this.#content!;
 		this.#content = this.#getNormalView();
 		replace(this.#content!, oldContent);

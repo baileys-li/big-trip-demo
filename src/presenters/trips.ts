@@ -24,6 +24,7 @@ export default class TripsPresenter {
 	#list = new TripListView();
 	#points: PointPresenter[] = [];
 	#filteredPoints: Record<FilterType, Point[]>;
+	#activePoint: PointPresenter | null = null;
 
 	constructor({ container, filterWrapper, pointsModel, offersModel, destinationsModel }: TripsPresenterProps) {
 		this.#container = container;
@@ -44,6 +45,14 @@ export default class TripsPresenter {
 		this.#renderInitial();
 	}
 
+	#changeActivePoint = (point: PointPresenter) => {
+		if (this.#activePoint && this.#activePoint !== point) {
+			this.#activePoint.switchToNormal();
+		}
+
+		this.#activePoint = point;
+	};
+
 	#clearList() {
 		this.#points.forEach((point) => point.destroy());
 		this.#points = [];
@@ -63,6 +72,7 @@ export default class TripsPresenter {
 					pointsModel: this.#pointsModel!,
 					offersModel: this.#offersModel!,
 					destinationsModel: this.#destinationsModel!,
+					changeActivePoint: this.#changeActivePoint,
 				})
 		);
 	}
