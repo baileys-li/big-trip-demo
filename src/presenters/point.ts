@@ -1,9 +1,8 @@
+import { EventView, EditEventView, TripItemView } from '@views';
+import { remove, render, replace } from '../framework/render';
 import type { OffersModel, PointsModel, DestinationModel } from '../models';
-import { render } from '../render';
+
 import { Point, PointType } from '../types/point';
-import EditEventView from '../views/edit-event';
-import EventView from '../views/event';
-import TripItemView from '../views/trip-item';
 
 interface PointPresenterProps {
 	point: Point;
@@ -11,51 +10,82 @@ interface PointPresenterProps {
 	pointsModel: PointsModel;
 	offersModel: OffersModel;
 	destinationsModel: DestinationModel;
+	onEditMode(point: PointPresenter): void;
 }
 
 export default class PointPresenter {
-	#pointsModel: PointsModel | null = null;
-	#offersModel: OffersModel | null = null;
-	#destinationsModel: DestinationModel | null = null;
-	#point: Point | null = null;
+	#pointsModel: PointsModel;
+	#offersModel: OffersModel;
+	#destinationsModel: DestinationModel;
+	#point: Point;
 
-	#container: HTMLElement | null = null;
+	#container: HTMLElement;
 	#item = new TripItemView();
 	#content: EventView | EditEventView | null = null;
+	#changeActivePoint: () => void;
 
-	constructor({ container, pointsModel, offersModel, destinationsModel, point }: PointPresenterProps) {
+	constructor({ container, pointsModel, offersModel, destinationsModel, point, onEditMode }: PointPresenterProps) {
 		this.#container = container;
 		this.#pointsModel = pointsModel;
 		this.#offersModel = offersModel;
 		this.#destinationsModel = destinationsModel;
 		this.#point = point;
+		this.#changeActivePoint = () => onEditMode(this);
 
 		this.#renderInfo();
 		render(this.#item, this.#container);
 	}
 
-	switchToEdit() {
+	#switchToEdit = () => {
 		const oldContent = this.#content!;
-		oldContent.element.remove();
-		oldContent.removeElement();
 		this.#content = new EditEventView({
-			point: this.#point!,
-			getDestinations: this.#destinationsModel!.getById.bind(this.#destinationsModel!),
-			getOffers: (type: PointType) => this.#offersModel!.getByType(type)?.offers || [],
+			point: this.#point,
+			getDestinations: this.#destinationsModel.getById.bind(this.#destinationsModel!),
+			getOffers: (type: PointType) => this.#offersModel.getByType(type)?.offers || [],
+			cancel: this.switchToNormal,
 		});
-		render(this.#content, this.#item.element);
-	}
+		replace(this.#content!, oldContent);
+		this.#changeActivePoint();
+		document.addEventListener('keydown', this.#handleEscKeyDown);
+	};
 
-	#renderInfo() {
+	#handleEscKeyDown = (evt: KeyboardEvent) => {
+		if (evt.key === 'Escape' || evt.key === 'Esc') {
+			this.switchToNormal();
+			this.#removeEscKeyDown();
+		}
+	};
+
+	#removeEscKeyDown = () => document.removeEventListener('keydown', this.#handleEscKeyDown);
+
+	switchToNormal = () => {
+		const oldContent = this.#content!;
+		this.#content = this.#getNormalView();
+		replace(this.#content!, oldContent);
+		this.#removeEscKeyDown();
+	};
+
+	#getNormalView() {
 		const point = this.#point!;
 		const destination = this.#destinationsModel!.getById(point.destination);
 		const offer = this.#offersModel!.getByType(point.type);
 
-		this.#content = new EventView({
+		return new EventView({
 			point,
 			city: destination?.name || '',
 			offers: offer?.offers.filter(({id}) => point.offers.includes(id)) || [],
+			switchMode: this.#switchToEdit,
 		});
+	}
+
+	#renderInfo() {
+		this.#content = this.#getNormalView();
 		render(this.#content, this.#item.element);
+	}
+
+	destroy() {
+		this.#removeEscKeyDown();
+		remove(this.#content!);
+		remove(this.#item);
 	}
 }

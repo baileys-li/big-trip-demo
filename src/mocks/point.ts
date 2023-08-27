@@ -2,15 +2,27 @@ import dayjs from 'dayjs';
 import { Point } from '../types/point';
 import { getRandomBoolean, getRandomInteger } from '../utils/random';
 
+const enum RandomTimeUpperBorder {
+	DAY = 7,
+	HOUR = 23,
+	MINUTE = 59,
+}
+
+let lastDate = dayjs()
+	.subtract(getRandomInteger(0, RandomTimeUpperBorder.DAY), 'day')
+	.subtract(getRandomInteger(0, RandomTimeUpperBorder.HOUR), 'hour')
+	.subtract(getRandomInteger(0, RandomTimeUpperBorder.MINUTE), 'minute');
+
 function getDates() {
-	const dateFrom = dayjs()
-		.subtract(getRandomInteger(0, 7), 'day')
-		.subtract(getRandomInteger(0, 23), 'hour')
-		.subtract(getRandomInteger(0, 59), 'minute');
+	const dateFrom = lastDate
+		.add(getRandomInteger(0, RandomTimeUpperBorder.HOUR), 'hour')
+		.add(getRandomInteger(0, RandomTimeUpperBorder.MINUTE), 'minute');
 	const dateTo = dateFrom
-		.add(getRandomInteger(0, 7), 'day')
-		.add(getRandomInteger(0, 23), 'hour')
-		.add(getRandomInteger(0, 59), 'minute');
+		.add(getRandomInteger(0, RandomTimeUpperBorder.DAY), 'day')
+		.add(getRandomInteger(0, RandomTimeUpperBorder.HOUR), 'hour')
+		.add(getRandomInteger(0, RandomTimeUpperBorder.MINUTE), 'minute');
+
+	lastDate = dateTo;
 
 	return {
 		dateFrom,

@@ -9,6 +9,12 @@
 		"moduleResolution": "node",
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
-		"strict": true
-}
+		"lib": ["ESNext", "ES2023.Array", "DOM", "DOM.Iterable"],
+		"strict": true,
+		"paths": {
+			"@views": ["./src/views"],
+			"@views/*": ["./src/views/*"],
+			"@presenters/*": ["./src/presenters/*"],
+		}
+	}
 }

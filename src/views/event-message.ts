@@ -1,5 +1,5 @@
 import type { MessageText } from '../constants/messages';
-import AbstractView from './_abstract';
+import AbstractView from '../framework/view/abstract-view';
 
 function markUp(message: MessageText) {
 	return `<p class="trip-events__msg">${message}</p>`;

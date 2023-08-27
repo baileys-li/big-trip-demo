@@ -31,6 +31,10 @@ export default {
 	],
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js'],
+		alias: {
+			'@views': resolve(__dirname, 'src/views/'),
+			'@presenters': resolve(__dirname, 'src/presenters/'),
+		},
 	},
 	module: {
 		rules: [
@@ -43,6 +47,10 @@ export default {
 						presets: ['@babel/preset-env'],
 					},
 				},
+			},
+			{
+				test: /\.css$/i,
+				use: ['style-loader', 'css-loader'],
 			},
 			{
 				test: /\.tsx?$/,

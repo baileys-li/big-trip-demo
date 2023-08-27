@@ -1,24 +1,33 @@
+import './utils/polyfills';
 import TripsPresenter from './presenters/trips';
-import { render } from './render';
-import TripFiltersView from './views/trip-filters';
-import TripInfoView from './views/trip-info';
-import TripSortView from './views/trip-sort';
+
 import { PointsModel, DestinationModel, OffersModel } from './models';
 import MockService from './services/mock';
 
-const headerMain = document.querySelector<HTMLDivElement>('.trip-main');
-const filterWrapper = document.querySelector<HTMLDivElement>('.trip-controls__filters');
-const eventsWrapper = document.querySelector<HTMLDivElement>('.trip-events');
+function getByClass<T extends HTMLElement>(className: string): T {
+	const element = document.querySelector<T>(`.${className}`);
 
-const service = new MockService();
-const [pointsModel, destinationsModel, offersModel] = [PointsModel, DestinationModel, OffersModel]
-	.map((Model) => new Model(service)) as [PointsModel, DestinationModel, OffersModel];
+	if (!element) {
+		throw new Error(`Element with class ${className} not found`);
+	}
 
-if (!headerMain || !filterWrapper || !eventsWrapper) {
-	throw new Error('Critical elements not found');
+	return element;
 }
 
-render(new TripInfoView(), headerMain, 'afterbegin');
-render(new TripFiltersView(), filterWrapper);
-render(new TripSortView(), eventsWrapper);
-new TripsPresenter({ container: eventsWrapper, pointsModel, destinationsModel, offersModel });
+const service = new MockService();
+const [pointsModel, destinationsModel, offersModel] = [PointsModel, DestinationModel, OffersModel].map((Model) => new Model(service)) as [
+	PointsModel,
+	DestinationModel,
+	OffersModel
+];
+
+new TripsPresenter({
+	containers: {
+		events: getByClass<HTMLDivElement>('trip-events'),
+		filters: getByClass<HTMLDivElement>('trip-controls__filters'),
+		info: getByClass<HTMLDivElement>('trip-main'),
+	},
+	pointsModel,
+	destinationsModel,
+	offersModel,
+});
