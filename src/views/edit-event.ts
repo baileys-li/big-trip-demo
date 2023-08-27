@@ -1,6 +1,6 @@
 import { CITIES } from '../constants';
 import AbstractView from '../framework/view/abstract-view';
-import { markUpTypeWrapper } from '../templates/type-wrapper';
+import { TypeCSSClass, markUpTypeWrapper } from '../templates/type-wrapper';
 import { Destination } from '../types/destinations';
 import { OfferItem } from '../types/offer';
 import { Point } from '../types/point';
@@ -100,13 +100,21 @@ function markUp({ point, getDestinations, getOffers }: EditEventViewProps) {
 }
 
 export default class EditEventView extends AbstractView<HTMLFormElement> {
-	#props: EditEventViewProps | null = null;
+	#props: EditEventViewProps;
+	#typeIcon: HTMLImageElement | null = null;
 	constructor(props: EditEventViewProps) {
 		super();
 		this.#props = props;
-
 		this.element.querySelector(`.${CSSClasses.ROLL_UP}`)?.addEventListener('click', this.#props.cancel);
+		this.element.querySelector(`.${TypeCSSClass.RADIO__WRAPPER}`)?.addEventListener('change', this.#handleTypeChange);
+		this.#typeIcon = this.element.querySelector(`.${TypeCSSClass.IMAGE}`);
 	}
+
+	#handleTypeChange = (evt: Event) => {
+		const target = evt.target as HTMLInputElement;
+		const type = target.value as Point['type'];
+		this.#typeIcon!.src = `img/icons/${type}.png`;
+	};
 
 	get template() {
 		return markUp(this.#props!);

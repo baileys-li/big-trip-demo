@@ -18,7 +18,7 @@ function getDates() {
 		.add(getRandomInteger(0, RandomTimeUpperBorder.HOUR), 'hour')
 		.add(getRandomInteger(0, RandomTimeUpperBorder.MINUTE), 'minute');
 	const dateTo = dateFrom
-		.add(getRandomInteger(0, RandomTimeUpperBorder.DAY + 4), 'day')
+		.add(getRandomInteger(0, RandomTimeUpperBorder.DAY), 'day')
 		.add(getRandomInteger(0, RandomTimeUpperBorder.HOUR), 'hour')
 		.add(getRandomInteger(0, RandomTimeUpperBorder.MINUTE), 'minute');
 

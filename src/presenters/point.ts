@@ -10,7 +10,7 @@ interface PointPresenterProps {
 	pointsModel: PointsModel;
 	offersModel: OffersModel;
 	destinationsModel: DestinationModel;
-	changeActivePoint(point: PointPresenter): void;
+	onEditMode(point: PointPresenter): void;
 }
 
 export default class PointPresenter {
@@ -24,13 +24,13 @@ export default class PointPresenter {
 	#content: EventView | EditEventView | null = null;
 	#changeActivePoint: () => void;
 
-	constructor({ container, pointsModel, offersModel, destinationsModel, point, changeActivePoint }: PointPresenterProps) {
+	constructor({ container, pointsModel, offersModel, destinationsModel, point, onEditMode }: PointPresenterProps) {
 		this.#container = container;
 		this.#pointsModel = pointsModel;
 		this.#offersModel = offersModel;
 		this.#destinationsModel = destinationsModel;
 		this.#point = point;
-		this.#changeActivePoint = () => changeActivePoint(this);
+		this.#changeActivePoint = () => onEditMode(this);
 
 		this.#renderInfo();
 		render(this.#item, this.#container);

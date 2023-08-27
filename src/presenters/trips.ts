@@ -48,7 +48,7 @@ export default class TripsPresenter {
 		this.#renderInitial();
 	}
 
-	#changeActivePoint = (point: PointPresenter) => {
+	#onEditMode = (point: PointPresenter) => {
 		if (this.#activePoint && this.#activePoint !== point) {
 			this.#activePoint.switchToNormal();
 		}
@@ -75,7 +75,7 @@ export default class TripsPresenter {
 					pointsModel: this.#pointsModel!,
 					offersModel: this.#offersModel!,
 					destinationsModel: this.#destinationsModel!,
-					changeActivePoint: this.#changeActivePoint,
+					onEditMode: this.#onEditMode,
 				})
 		);
 	}
