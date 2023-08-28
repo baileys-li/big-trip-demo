@@ -33,7 +33,7 @@ export default class SummaryPresenter {
 		const cities: string[] = [];
 
 		for (const point of points) {
-			const city = this.#destinationsModel.getById(point.destination)!.name || '';
+			const city = this.#destinationsModel.getNameById(point.destination);
 			if (cities.at(-1) !== city) {
 				cities.push(city);
 			}

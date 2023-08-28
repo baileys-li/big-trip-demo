@@ -66,14 +66,13 @@ export default class PointPresenter {
 	};
 
 	#getNormalView() {
-		const point = this.#point!;
-		const destination = this.#destinationsModel!.getById(point.destination);
-		const offer = this.#offersModel!.getByType(point.type);
+		const {type, destination, offers} = this.#point;
+		const allOffers = this.#offersModel.getByType(type)!.offers;
 
 		return new EventView({
-			point,
-			city: destination?.name || '',
-			offers: offer?.offers.filter(({id}) => point.offers.includes(id)) || [],
+			point: this.#point,
+			city: this.#destinationsModel.getNameById(destination),
+			offers: allOffers.filter(({id}) => offers.includes(id)) || [],
 			switchMode: this.#switchToEdit,
 		});
 	}
