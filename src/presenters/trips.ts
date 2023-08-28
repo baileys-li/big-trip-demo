@@ -1,6 +1,6 @@
 import { TripFiltersView, TripInfoView, TripSortView } from '@views';
 import { render } from '../framework/render';
-import type { OffersModel, PointsModel, DestinationModel } from '../models';
+import { type OffersModel, type PointsModel, type DestinationModel, TotalSumModel } from '../models';
 import TripListView from '../views/trip-list';
 import PointPresenter from './point';
 import { FilterType } from '../types/filter';
@@ -24,6 +24,7 @@ export default class TripsPresenter {
 	#pointsModel: PointsModel;
 	#offersModel: OffersModel;
 	#destinationsModel: DestinationModel;
+	#totalSumModel: TotalSumModel;
 	#containers: Containers;
 	#list = new TripListView();
 	#points: PointPresenter[] = [];
@@ -35,6 +36,8 @@ export default class TripsPresenter {
 		this.#pointsModel = pointsModel;
 		this.#offersModel = offersModel;
 		this.#destinationsModel = destinationsModel;
+		this.#totalSumModel = new TotalSumModel({ points: pointsModel, offers: offersModel });
+
 		const now = dayjs();
 
 		this.#filteredPoints = {
@@ -98,15 +101,14 @@ export default class TripsPresenter {
 		const dateFrom = points.at(0)?.dateFrom;
 		const dateTo = points.at(-1)?.dateTo;
 
-		const price = points.reduce((acc, point) =>{
-			const offers = this.#offersModel.getByType(point.type)?.offers || [];
-			const offersPrice = point.offers.reduce((offerAcc, offer) => offerAcc + (offers.find(({ id }) => id === offer)?.price || 0), 0);
+		const price = this.#totalSumModel.sum;
+
+		for (const point of points) {
 			const city = this.#destinationsModel.getById(point.destination)!.name || '';
 			if (cities.at(-1) !== city) {
 				cities.push(city);
 			}
-			return acc + point.basePrice + offersPrice;
-		}, 0);
+		}
 
 		render(new TripInfoView({
 			dateFrom, dateTo, cities, price,
