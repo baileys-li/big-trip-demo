@@ -34,13 +34,13 @@ export default class TripFiltersView extends AbstractView<HTMLFormElement> {
 		this.#initHandlers();
 	}
 
-	#handleChange(evt: Event) {
+	#handleChange = (evt: Event) => {
 		const target = evt.target as HTMLInputElement;
 		this.#onFilterChange(target.value as FilterType);
-	}
+	};
 
 	#initHandlers() {
-		this.element.addEventListener('change', this.#handleChange.bind(this));
+		this.element.addEventListener('change', this.#handleChange);
 	}
 
 	get template() {

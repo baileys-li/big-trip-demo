@@ -2,7 +2,8 @@ import { EventView, EditEventView, TripItemView } from '@views';
 import { remove, render, replace } from '../framework/render';
 import type { OffersModel, PointsModel, DestinationModel } from '../models';
 
-import { Point, PointType } from '../types/point';
+import { Point } from '../types/point';
+import PointTypePresenter from './point-type';
 
 interface PointPresenterProps {
 	point: Point;
@@ -41,8 +42,18 @@ export default class PointPresenter {
 		this.#content = new EditEventView({
 			point: this.#point,
 			getDestinations: this.#destinationsModel.getById.bind(this.#destinationsModel!),
-			getOffers: (type: PointType) => this.#offersModel.getByType(type)?.offers || [],
 			cancel: this.switchToNormal,
+		});
+
+		new PointTypePresenter({
+			type: this.#point.type,
+			getOffers: this.#offersModel.getOffers.bind(this.#offersModel),
+			selectedOffers: this.#point.offers,
+			wrapper: {
+				selector: this.#content.header,
+				output: this.#content.destinationWrapper,
+				options: this.#content.details,
+			}
 		});
 		replace(this.#content!, oldContent);
 		this.#changeActivePoint();
