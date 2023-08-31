@@ -39,9 +39,6 @@ function markUp({ point }: EditEventViewProps) {
 		<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
 		<button class="event__reset-btn" type="reset">Delete</button>
 		${/* <button class="event__reset-btn" type="reset">Cancel</button> */ ''}
-		<button class="${CSSClasses.ROLL_UP}" type="button">
-			<span class="visually-hidden">Open event</span>
-		</button>
 	</header>
 	<section class="${CSSClasses.DETAILS}"></section>
 </form>`;
@@ -54,7 +51,6 @@ export default class EditEventView extends AbstractView<HTMLFormElement> {
 	constructor(props: EditEventViewProps) {
 		super();
 		this.#props = props;
-		this.element.querySelector(`.${CSSClasses.ROLL_UP}`)?.addEventListener('click', this.#props.cancel);
 		this.header = this.element.querySelector(`.${CSSClasses.HEADER}`)!;
 		this.details = this.element.querySelector(`.${CSSClasses.DETAILS}`)!;
 	}

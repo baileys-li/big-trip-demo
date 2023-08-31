@@ -5,6 +5,7 @@ import type { OffersModel, PointsModel, DestinationModel } from '../models';
 import { Point } from '../types/point';
 import PointTypePresenter from './point-type';
 import DestinationPresenter from './destination';
+import RollUpView from '@views/roll-up';
 
 interface PointPresenterProps {
 	point: Point;
@@ -50,7 +51,7 @@ export default class PointPresenter {
 			wrapper: {
 				selector: this.#content.header,
 				output: this.#content.details,
-			}
+			},
 		});
 
 		new PointTypePresenter({
@@ -61,10 +62,18 @@ export default class PointPresenter {
 				selector: this.#content.header,
 				output: destinationPresenter.view,
 				options: this.#content.details,
-			}
+			},
 		});
 
 		replace(this.#content!, oldContent);
+
+		render(
+			new RollUpView({
+				onClick: this.switchToNormal,
+			}),
+			this.#content.header,
+			'beforeend'
+		);
 		this.#changeActivePoint();
 		document.addEventListener('keydown', this.#handleEscKeyDown);
 	};
@@ -86,15 +95,24 @@ export default class PointPresenter {
 	};
 
 	#getNormalView() {
-		const {type, destination, offers} = this.#point;
+		const { type, destination, offers } = this.#point;
 		const allOffers = this.#offersModel.getByType(type)!.offers;
 
-		return new EventView({
+		const content = new EventView({
 			point: this.#point,
 			city: this.#destinationsModel.getNameById(destination),
-			offers: allOffers.filter(({id}) => offers.includes(id)) || [],
-			switchMode: this.#switchToEdit,
+			offers: allOffers.filter(({ id }) => offers.includes(id)) || [],
 		});
+
+		render(
+			new RollUpView({
+				onClick: this.#switchToEdit,
+			}),
+			content.element,
+			'beforeend'
+		);
+
+		return content;
 	}
 
 	#renderInfo() {
