@@ -10,6 +10,7 @@ interface TypeSelectorViewProps {
 export default class TypeSelectorView extends AbstractView<HTMLFormElement> {
 	#initialType: PointType;
 	#typeIcon: HTMLImageElement;
+	#toggle: HTMLInputElement;
 	#changeCallback: (type: PointType) => void;
 
 	constructor({type, onTypeChange}: TypeSelectorViewProps) {
@@ -17,6 +18,7 @@ export default class TypeSelectorView extends AbstractView<HTMLFormElement> {
 		this.#initialType = type;
 		this.#changeCallback = onTypeChange;
 		this.#typeIcon = this.element.querySelector(`.${TypeCSSClass.IMAGE}`)!;
+		this.#toggle = this.element.querySelector(`.${TypeCSSClass.TOGGLE}`)!;
 		this.element.querySelector(`.${TypeCSSClass.RADIO__WRAPPER}`)?.addEventListener('change', this.#handleTypeChange);
 	}
 
@@ -28,6 +30,7 @@ export default class TypeSelectorView extends AbstractView<HTMLFormElement> {
 		const target = evt.target as HTMLInputElement;
 		const type = target.value as PointType;
 		this.#typeIcon!.src = `img/icons/${type}.png`;
+		this.#toggle.checked = false;
 		this.#changeCallback(type);
 	};
 }

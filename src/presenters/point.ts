@@ -4,6 +4,7 @@ import type { OffersModel, PointsModel, DestinationModel } from '../models';
 
 import { Point } from '../types/point';
 import PointTypePresenter from './point-type';
+import DestinationPresenter from './destination';
 
 interface PointPresenterProps {
 	point: Point;
@@ -41,8 +42,15 @@ export default class PointPresenter {
 		const oldContent = this.#content!;
 		this.#content = new EditEventView({
 			point: this.#point,
-			getDestinations: this.#destinationsModel.getById.bind(this.#destinationsModel!),
 			cancel: this.switchToNormal,
+		});
+		const destinationPresenter = new DestinationPresenter({
+			initialId: this.#point.destination,
+			model: this.#destinationsModel,
+			wrapper: {
+				selector: this.#content.header,
+				output: this.#content.details,
+			}
 		});
 
 		new PointTypePresenter({
@@ -51,10 +59,11 @@ export default class PointPresenter {
 			selectedOffers: this.#point.offers,
 			wrapper: {
 				selector: this.#content.header,
-				output: this.#content.destinationWrapper,
+				output: destinationPresenter.view,
 				options: this.#content.details,
 			}
 		});
+
 		replace(this.#content!, oldContent);
 		this.#changeActivePoint();
 		document.addEventListener('keydown', this.#handleEscKeyDown);

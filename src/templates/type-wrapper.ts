@@ -5,6 +5,7 @@ import { capitilize } from '../utils';
 export const TypeCSSClass = {
 	RADIO__WRAPPER: 'event__type-group',
 	IMAGE: 'event__type-icon',
+	TOGGLE: 'event__type-toggle',
 };
 
 const markUpTypeSelect = (type: PointType, checked = false) => `<div class="event__type-item">
@@ -21,7 +22,7 @@ export const markUpTypeWrapper = (type: PointType) => `<div class="event__type-w
 	<span class="visually-hidden">Choose event type</span>
 	<img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="${type} icon">
 </label>
-<input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+<input class="${TypeCSSClass.TOGGLE}  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
 <div class="event__type-list">
 	<fieldset class="event__type-group">
