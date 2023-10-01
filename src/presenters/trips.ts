@@ -1,11 +1,12 @@
-import { TripFiltersView, TripInfoView, TripSortView } from '@views';
+import { TripFiltersView, TripSortView } from '@views';
 import { render } from '../framework/render';
-import type { OffersModel, PointsModel, DestinationModel } from '../models';
+import { type OffersModel, type PointsModel, type DestinationModel, TotalSumModel } from '../models';
 import TripListView from '../views/trip-list';
 import PointPresenter from './point';
 import { FilterType } from '../types/filter';
 import { Point } from '../types/point';
 import dayjs from 'dayjs';
+import SummaryPresenter from './summary';
 
 interface Containers {
 	events: HTMLElement;
@@ -35,6 +36,7 @@ export default class TripsPresenter {
 		this.#pointsModel = pointsModel;
 		this.#offersModel = offersModel;
 		this.#destinationsModel = destinationsModel;
+
 		const now = dayjs();
 
 		this.#filteredPoints = {
@@ -81,7 +83,14 @@ export default class TripsPresenter {
 	}
 
 	#renderInitial() {
-		this.#renderMainInfo();
+		new SummaryPresenter({
+			wrapper: this.#containers.info,
+			models: {
+				points: this.#pointsModel,
+				destination: this.#destinationsModel,
+				sum: new TotalSumModel({ points: this.#pointsModel, offers: this.#offersModel })
+			}
+		});
 		render(new TripSortView(), this.#containers.events);
 		render(this.#list, this.#containers.events);
 		render(new TripFiltersView({
@@ -92,24 +101,4 @@ export default class TripsPresenter {
 		this.#renderPoints(this.#pointsModel!.points);
 	}
 
-	#renderMainInfo() {
-		const points = this.#pointsModel.points;
-		const cities: string[] = [];
-		const dateFrom = points.at(0)?.dateFrom;
-		const dateTo = points.at(-1)?.dateTo;
-
-		const price = points.reduce((acc, point) =>{
-			const offers = this.#offersModel.getByType(point.type)?.offers || [];
-			const offersPrice = point.offers.reduce((offerAcc, offer) => offerAcc + (offers.find(({ id }) => id === offer)?.price || 0), 0);
-			const city = this.#destinationsModel.getById(point.destination)!.name || '';
-			if (cities.at(-1) !== city) {
-				cities.push(city);
-			}
-			return acc + point.basePrice + offersPrice;
-		}, 0);
-
-		render(new TripInfoView({
-			dateFrom, dateTo, cities, price,
-		}), this.#containers.info, 'afterbegin');
-	}
 }

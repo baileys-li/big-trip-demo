@@ -2,7 +2,11 @@ import { EventView, EditEventView, TripItemView } from '@views';
 import { remove, render, replace } from '../framework/render';
 import type { OffersModel, PointsModel, DestinationModel } from '../models';
 
-import { Point, PointType } from '../types/point';
+import { Point } from '../types/point';
+import PointTypePresenter from './point-type';
+import DestinationPresenter from './destination';
+import RollUpView from '@views/roll-up';
+import FavoriteView from '@views/favorite';
 
 interface PointPresenterProps {
 	point: Point;
@@ -40,11 +44,37 @@ export default class PointPresenter {
 		const oldContent = this.#content!;
 		this.#content = new EditEventView({
 			point: this.#point,
-			getDestinations: this.#destinationsModel.getById.bind(this.#destinationsModel!),
-			getOffers: (type: PointType) => this.#offersModel.getByType(type)?.offers || [],
 			cancel: this.switchToNormal,
 		});
+		const destinationPresenter = new DestinationPresenter({
+			initialId: this.#point.destination,
+			model: this.#destinationsModel,
+			wrapper: {
+				selector: this.#content.header,
+				output: this.#content.details,
+			},
+		});
+
+		new PointTypePresenter({
+			type: this.#point.type,
+			getOffers: this.#offersModel.getOffers.bind(this.#offersModel),
+			selectedOffers: this.#point.offers,
+			wrapper: {
+				selector: this.#content.header,
+				output: destinationPresenter.view,
+				options: this.#content.details,
+			},
+		});
+
 		replace(this.#content!, oldContent);
+
+		render(
+			new RollUpView({
+				onClick: this.switchToNormal,
+			}),
+			this.#content.header,
+			'beforeend'
+		);
 		this.#changeActivePoint();
 		document.addEventListener('keydown', this.#handleEscKeyDown);
 	};
@@ -66,16 +96,32 @@ export default class PointPresenter {
 	};
 
 	#getNormalView() {
-		const point = this.#point!;
-		const destination = this.#destinationsModel!.getById(point.destination);
-		const offer = this.#offersModel!.getByType(point.type);
+		const { type, destination, offers } = this.#point;
+		const allOffers = this.#offersModel.getByType(type)!.offers;
 
-		return new EventView({
-			point,
-			city: destination?.name || '',
-			offers: offer?.offers.filter(({id}) => point.offers.includes(id)) || [],
-			switchMode: this.#switchToEdit,
+		const content = new EventView({
+			point: this.#point,
+			city: this.#destinationsModel.getNameById(destination),
+			offers: allOffers.filter(({ id }) => offers.includes(id)) || [],
 		});
+
+		render(
+			new FavoriteView({
+				onClick: () => Promise.resolve({})
+			}),
+			content.element,
+			'beforeend'
+		);
+
+		render(
+			new RollUpView({
+				onClick: this.#switchToEdit,
+			}),
+			content.element,
+			'beforeend'
+		);
+
+		return content;
 	}
 
 	#renderInfo() {
