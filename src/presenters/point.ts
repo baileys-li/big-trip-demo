@@ -6,6 +6,7 @@ import { Point } from '../types/point';
 import PointTypePresenter from './point-type';
 import DestinationPresenter from './destination';
 import RollUpView from '@views/roll-up';
+import FavoriteView from '@views/favorite';
 
 interface PointPresenterProps {
 	point: Point;
@@ -103,6 +104,14 @@ export default class PointPresenter {
 			city: this.#destinationsModel.getNameById(destination),
 			offers: allOffers.filter(({ id }) => offers.includes(id)) || [],
 		});
+
+		render(
+			new FavoriteView({
+				onClick: () => Promise.resolve({})
+			}),
+			content.element,
+			'beforeend'
+		);
 
 		render(
 			new RollUpView({
